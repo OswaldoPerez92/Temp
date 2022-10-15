@@ -1,0 +1,30 @@
+public static byte[] Resize2Max250Kbytes(byte[] byteImageIn)
+        {
+            byte[] currentByteImageArray = byteImageIn;
+            double scale = 0.15f;
+
+            /* 
+            if (!IsValidImage(byteImageIn))
+            {
+                return null;
+            }*/
+
+            MemoryStream inputMemoryStream = new MemoryStream(byteImageIn);
+            Image fullsizeImage = Image.FromStream(inputMemoryStream);
+
+            
+            Console.WriteLine("fullsizeImage.RawFormat {0}", fullsizeImage.RawFormat.ToString());
+            while (currentByteImageArray.Length > 250000)
+            {
+                Console.WriteLine("currentByteImageArray {0}", currentByteImageArray.Length);
+                Bitmap fullSizeBitmap = new Bitmap(fullsizeImage, new Size((int)(fullsizeImage.Width * scale), (int)(fullsizeImage.Height * scale)));
+                MemoryStream resultStream = new MemoryStream();
+                fullSizeBitmap.Save(resultStream, fullsizeImage.RawFormat);
+                currentByteImageArray = resultStream.ToArray();
+                resultStream.Dispose();
+                resultStream.Close();
+                scale -= 0.05f;
+            }
+
+            return currentByteImageArray;
+        }
